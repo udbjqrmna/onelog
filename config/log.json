@@ -1,0 +1,20 @@
+{
+	"Root": "./log/",
+	"OutputToConsole": "NO",
+	"Records": [
+		{
+			"Id": "",
+			"MaxCapacity": 200,
+			"LogLevel": 1
+		},
+		{
+			"Id": "abc",
+			"FileName": "log_abc.log",
+			"MaxCapacity": 200,
+			"OutputToConsole": "no",
+			"LogLevel": 0
+		}
+	]
+}
+
+
