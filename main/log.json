@@ -1,0 +1,50 @@
+{
+	"LogLevel": "Trace",
+	"Pattern": "JsonPattern",
+	"Writer": "file",
+	"WriterPara": {
+		"LogsRoot": "./logs",
+		"FileName": "log.log",
+		"MaxCapacity": 1
+	},
+	"Logs": [
+		{
+			"Id": "one",
+			"LogLevel": "Trace",
+			"Pattern": "JsonPattern",
+			"Writer": "file",
+			"WriterPara": {
+				"LogsRoot": "./logs.abc/ce",
+				"FileName": "log2.log",
+				"MaxCapacity": 1
+			}
+		},
+		{
+			"Id": "two",
+			"LogLevel": "Info",
+			"Pattern": "old",
+			"Writer": "console",
+			"WriterPara": {
+				"Console": "Stderr"
+			}
+		},
+		{
+			"Id": "three",
+			"LogLevel": "Info",
+			"Pattern": "JsonPattern",
+			"Writer": "multiple",
+			"WriterPara": [
+				{
+					"Writer": "file",
+					"WriterPara": {
+						"LogsRoot": "./logs23",
+						"FileName": "multiple.log",
+						"MaxCapacity": 5
+					}
+				}
+			]
+		}
+	]
+}
+
+

@@ -1,11 +1,10 @@
 package onelog
 
 import (
-	"os"
 	"time"
 )
 
-//var logs = make(map[string]*Logger)
+var logs = make(map[string]*Logger)
 
 type Level uint8
 
@@ -16,13 +15,13 @@ const (
 	// InfoLevel defines info log level.
 	InfoLevel
 	// WarnLevel defines warn log level.
-	WarnLeven
+	WarnLevel
 	// ErrorLevel defines error log level.
-	ErrorLeven
+	ErrorLevel
 	// FatalLevel defines fatal log level.
 	FatalLevel
 	// PanicLevel defines panic log level.
-	PanicLeven
+	PanicLevel
 
 	Disable
 )
@@ -37,11 +36,6 @@ var (
 	CallerSkipFrameCount = 0
 )
 
-var defaultLog *Logger
-
-func init() {
-	defaultLog = New(Stdout{os.Stdout}, TraceLevel, JsonPattern{})
-}
 func (l Level) String() string {
 	switch l {
 	case TraceLevel:
@@ -50,13 +44,13 @@ func (l Level) String() string {
 		return "DEBUG"
 	case InfoLevel:
 		return "INFO"
-	case WarnLeven:
+	case WarnLevel:
 		return "WARN"
-	case ErrorLeven:
+	case ErrorLevel:
 		return "ERROR"
 	case FatalLevel:
 		return "FATAL"
-	case PanicLeven:
+	case PanicLevel:
 		return "PANIC"
 	}
 	return ""
@@ -67,13 +61,12 @@ type Logger struct {
 	writer   Writer
 	minLevel Level
 	pattern  WritePattern
-	//context    []byte
 }
 
 //NewLogger 返回一个新的Logger
 func New(writer Writer, level Level, pattern WritePattern) *Logger {
 	var l = level
-	if level > PanicLeven {
+	if level > PanicLevel {
 		l = Disable
 	}
 
@@ -90,56 +83,20 @@ func New(writer Writer, level Level, pattern WritePattern) *Logger {
 }
 
 func (l *Logger) refresh() {
-	for i := TraceLevel; i <= PanicLeven; i++ {
+	for i := TraceLevel; i <= PanicLevel; i++ {
 		if l.minLevel > i {
 			l.lws[i] = disableLevelWriter
-		} else {
-			//TODO 这里可以根据不同的等级给不同的默认值。
-			lw := newDefaultLevelWriter(l.writer, i, l.pattern)
-			l.lws[i] = lw
+		} else { //如果已经设置过的将保留
+			switch l.lws[i].(type) {
+			case nil, *DisableLevelWriter:
+				l.lws[i] = newDefaultLevelWriter(l.writer, i, l.pattern)
+			}
 		}
 	}
 }
 
 func (l *Logger) Close() {
 	l.writer.Close()
-}
-
-//TODO 可修改默认值等等
-
-//Trace 返回一个默认的Trace等级的日志对象。如果整体日志等级高于，则返回nil
-func Trace() LevelWriter {
-	return defaultLog.Trace()
-}
-
-//Debug 返回一个默认的Debug等级的日志对象。如果整体日志等级高于，则返回nil
-func Debug() LevelWriter {
-	return defaultLog.Debug()
-}
-
-//Info 返回一个默认的Info等级的日志对象。如果整体日志等级高于，则返回nil
-func Info() LevelWriter {
-	return defaultLog.Info()
-}
-
-//Fatal 返回一个默认的Fatal等级的日志对象。如果整体日志等级高于，则返回nil
-func Fatal() LevelWriter {
-	return defaultLog.Fatal()
-}
-
-//Error 返回一个默认的Error等级的日志对象。如果整体日志等级高于，则返回nil
-func Error() LevelWriter {
-	return defaultLog.Error()
-}
-
-//Warn 返回一个默认的Warn等级的日志对象。如果整体日志等级高于，则返回nil
-func Warn() LevelWriter {
-	return defaultLog.Warn()
-}
-
-//Panic 返回一个默认的Panic等级的日志对象。如果整体日志等级高于，则返回nil
-func Panic() LevelWriter {
-	return defaultLog.Panic()
 }
 
 //TraceLevel 返回一个Trace等级的日志对象。如果整体日志等级高于，则返回nil
@@ -169,22 +126,22 @@ func (l *Logger) Info() LevelWriter {
 	return l.lws[InfoLevel].clone()
 }
 
-//WarnLeven 返回一个Warn等级的日志对象。如果整体日志等级高于，则返回nil
+//WarnLevel 返回一个Warn等级的日志对象。如果整体日志等级高于，则返回nil
 func (l *Logger) Warn() LevelWriter {
-	if l.minLevel > WarnLeven {
+	if l.minLevel > WarnLevel {
 		return &DisableLevelWriter{}
 	}
 
-	return l.lws[WarnLeven].clone()
+	return l.lws[WarnLevel].clone()
 }
 
-//ErrorLeven 返回一个Error等级的日志对象。如果整体日志等级高于，则返回nil
+//ErrorLevel 返回一个Error等级的日志对象。如果整体日志等级高于，则返回nil
 func (l *Logger) Error() LevelWriter {
-	if l.minLevel > ErrorLeven {
+	if l.minLevel > ErrorLevel {
 		return &DisableLevelWriter{}
 	}
 
-	return l.lws[ErrorLeven].clone()
+	return l.lws[ErrorLevel].clone()
 }
 
 //FatalLevel 返回一个Fatal等级的日志对象。如果整体日志等级高于，则返回nil
@@ -196,11 +153,40 @@ func (l *Logger) Fatal() LevelWriter {
 	return l.lws[FatalLevel].clone()
 }
 
-//PanicLeven 返回一个Panic等级的日志对象。如果整体日志等级高于，则返回nil
+//PanicLevel 返回一个Panic等级的日志对象。如果整体日志等级高于，则返回nil
 func (l *Logger) Panic() LevelWriter {
-	if l.minLevel > PanicLeven {
+	if l.minLevel > PanicLevel {
 		return &DisableLevelWriter{}
 	}
 
-	return l.lws[PanicLeven].clone()
+	return l.lws[PanicLevel].clone()
+}
+
+//SetLevelWriter 设置指定等级的LevelWriter对象，如果参数给的是nil.则会替换成DisableLevelWriter对象。
+func (l *Logger) SetLevelWriter(level Level, leverWriter LevelWriter) *Logger {
+	if leverWriter == nil {
+		l.lws[level] = &DisableLevelWriter{}
+	} else {
+		l.lws[level] = leverWriter
+	}
+
+	return l
+}
+
+//SetLevel 设置Log的记录等级
+func (l *Logger) SetLevel(level Level) *Logger {
+	l.minLevel = level
+	l.refresh()
+
+	return l
+}
+
+//SaveLogList 将一个日志对象存入日志列表当中
+func SaveLogList(name string, log *Logger) {
+	logs[name] = log
+}
+
+//GetLog 将已经存入日志列表当中的日志对象取出,如果未找到将返回
+func GetLog(name string) *Logger {
+	return logs[name]
 }

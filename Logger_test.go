@@ -7,7 +7,7 @@ import (
 )
 
 func TestA(t *testing.T) {
-	var log = New(Stdout{os.Stdout}, InfoLevel, JsonPattern{})
+	var log = New(&Stdout{os.Stdout}, InfoLevel, &JsonPattern{})
 
 	go log.Info().Bool("B", true).Int("INT", 10).Msg("abcdefg")
 	log.Info().Bool("B", true).Int("INT", 10).Msg("abcdefg")
@@ -21,7 +21,7 @@ func TestA(t *testing.T) {
 func TestWriteFile(t *testing.T) {
 	//fw, _ := NewFileWriter("./log/a.log", 50000000)
 	//var log = New(fw, TraceLevel)
-	var log = New(Stdout{os.Stdout}, TraceLevel, JsonPattern{})
+	var log = New(&Stdout{os.Stdout}, TraceLevel, &JsonPattern{})
 
 	//TimeFormat = ""
 
@@ -44,7 +44,7 @@ func TestCaller(t *testing.T) {
 
 func call() {
 	fw, _ := NewFileWriter("./log/a.log", 50000000)
-	var log = New(fw, TraceLevel, JsonPattern{})
+	var log = New(fw, TraceLevel, &JsonPattern{})
 
 	log.Debug().AddRuntime(&Caller{})
 
@@ -61,9 +61,9 @@ func call() {
 func TestMulFile(t *testing.T) {
 	fw, _ := NewFileWriter("./log/a.log", 50000000)
 	//var log = New(fw, TraceLevel)
-	mul := NewMultipleWriter(fw, Stdout{os.Stdout})
+	mul := NewMultipleWriter(fw, &Stdout{os.Stdout})
 
-	var log = New(mul, TraceLevel, JsonPattern{})
+	var log = New(mul, TraceLevel, &JsonPattern{})
 
 	TimeFormat = ""
 
@@ -84,9 +84,9 @@ func TestMulFile(t *testing.T) {
 func TestPattern(t *testing.T) {
 	fw, _ := NewFileWriter("./log/a.log", 50000000)
 	//var log = New(fw, TraceLevel)
-	mul := NewMultipleWriter(fw, Stdout{os.Stdout})
+	mul := NewMultipleWriter(fw, &Stdout{os.Stdout})
 
-	var log = New(mul, TraceLevel, OldPattern{})
+	var log = New(mul, TraceLevel, &OldPattern{})
 
 	//TimeFormat = ""
 
@@ -103,8 +103,9 @@ func TestPattern(t *testing.T) {
 	log.Close()
 }
 
-func TestRuningTime(t *testing.T) {
-	var log = New(Stdout{os.Stdout}, ErrorLeven, JsonPattern{})
+func TestRunningTime(t *testing.T) {
+	LevelName = "L"
+	var log = New(&Stdout{os.Stdout}, ErrorLevel, &JsonPattern{})
 
 	//TimeFormat = ""
 	//log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddConstant("a1", "b2")
