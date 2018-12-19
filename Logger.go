@@ -27,13 +27,12 @@ const (
 )
 
 var (
-	MessageName          = "msg"
-	CoroutineIDName      = "cid"
-	LevelName            = "level"
-	TimeName             = "time"
-	TimeFormat           = time.RFC3339
-	CallerName           = "caller"
-	CallerSkipFrameCount = 0
+	MessageName     = "msg"
+	CoroutineIDName = "cid"
+	LevelName       = "level"
+	TimeName        = "time"
+	TimeFormat      = time.RFC3339
+	CallerName      = "caller"
 )
 
 func (l Level) String() string {
@@ -60,11 +59,11 @@ type Logger struct {
 	lws      []LevelWriter
 	writer   Writer
 	minLevel Level
-	pattern  WritePattern
+	pattern  Pattern
 }
 
 //NewLogger 返回一个新的Logger
-func New(writer Writer, level Level, pattern WritePattern) *Logger {
+func New(writer Writer, level Level, pattern Pattern) *Logger {
 	var l = level
 	if level > PanicLevel {
 		l = Disable

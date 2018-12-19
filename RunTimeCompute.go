@@ -55,14 +55,15 @@ func (t *TimeValue) Values() []byte {
 
 //Caller 得到当前的调用者信息，可根据跳过值增加
 type Caller struct {
+	CallerSkipFrameCount int
 }
 
 func (*Caller) GetName() string {
 	return CallerName
 }
 
-func (*Caller) Values() []byte {
-	_, file, line, ok := runtime.Caller(CallerSkipFrameCount + 2)
+func (c *Caller) Values() []byte {
+	_, file, line, ok := runtime.Caller(c.CallerSkipFrameCount + 2)
 	var buf = make([]byte, len(file)+7)
 
 	if ok {

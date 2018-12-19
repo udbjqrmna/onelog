@@ -16,14 +16,14 @@ type LevelWriter interface {
 	clone() LevelWriter
 	//AddRuntime 增加一个计算值，这个值在每一个日志等级独立，每一次记录日志都将重新计算并记录它
 	AddRuntime(r RunTimeCompute) LevelWriter
-	//AddConstant 在日志里面增加一个常量值，这个常量值在每一个日志等级独立，每一次记录日志都将进行记录它
-	AddConstant(name, value string) LevelWriter
+	//AddStatic 在日志里面增加一个常量值，这个常量值在每一个日志等级独立，每一次记录日志都将进行记录它
+	AddStatic(name, value string) LevelWriter
 }
 
 var TRUE = []byte("true")
 var FALSE = []byte("false")
 
-func newDefaultLevelWriter(writer Writer, level Level, pattern WritePattern) *DefaultLevelWriter {
+func newDefaultLevelWriter(writer Writer, level Level, pattern Pattern) *DefaultLevelWriter {
 	lw := &DefaultLevelWriter{
 		buffer:  make([]byte, 256),
 		Pattern: pattern,
@@ -39,7 +39,7 @@ func newDefaultLevelWriter(writer Writer, level Level, pattern WritePattern) *De
 
 type DefaultLevelWriter struct {
 	buffer          []byte
-	Pattern         WritePattern
+	Pattern         Pattern
 	Writer          Writer
 	runtimeComputes *RunTimeComputes
 	origin          *DefaultLevelWriter
@@ -64,7 +64,7 @@ func (lw *DefaultLevelWriter) AddRuntime(r RunTimeCompute) LevelWriter {
 	return lw
 }
 
-func (lw *DefaultLevelWriter) AddConstant(name, value string) LevelWriter {
+func (lw *DefaultLevelWriter) AddStatic(name, value string) LevelWriter {
 	or := lw.origin
 	if or == nil {
 		or = lw
@@ -225,6 +225,6 @@ func (dlw *DisableLevelWriter) AddRuntime(r RunTimeCompute) LevelWriter {
 	return dlw
 }
 
-func (dlw *DisableLevelWriter) AddConstant(name, value string) LevelWriter {
+func (dlw *DisableLevelWriter) AddStatic(name, value string) LevelWriter {
 	return dlw
 }

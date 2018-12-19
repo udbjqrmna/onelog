@@ -35,6 +35,12 @@
 			"Writer": "multiple",
 			"WriterPara": [
 				{
+					"Writer": "console",
+					"WriterPara": {
+						"Console": "Stderr"
+					}
+				},
+				{
 					"Writer": "file",
 					"WriterPara": {
 						"LogsRoot": "./logs23",

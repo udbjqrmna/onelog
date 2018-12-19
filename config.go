@@ -177,7 +177,7 @@ func loadLogs(config map[string]interface{}) error {
 		for _, record := range configs.([]interface{}) {
 			var r = record.(map[string]interface{})
 
-			var pattern = reflect.New(reflect.TypeOf(refPattern[r["Pattern"].(string)])).Interface().(WritePattern)
+			var pattern = reflect.New(reflect.TypeOf(refPattern[r["Pattern"].(string)])).Interface().(Pattern)
 			var writer = reflect.New(reflect.TypeOf(refWriter[r["Writer"].(string)])).Interface().(Writer)
 
 			//设置对象的实际参数
@@ -218,8 +218,8 @@ func init() {
 
 }
 
-//RegisterInitRef 注册自己相关的初始化对象，此方法接受一个func(map[string]WritePattern, map[string]Writer)参数。
-//在func(map[string]WritePattern, map[string]Writer)　方法内增加对应配置文件的名称与对象
+//RegisterInitRef 注册自己相关的初始化对象，此方法接受一个func(map[string]Pattern, map[string]Writer)参数。
+//在func(map[string]Pattern, map[string]Writer)　方法内增加对应配置文件的名称与对象
 func RegisterInitRef(init func(map[string]interface{}, map[string]interface{})) error {
 	if init == nil {
 		return NotNil("初始化方法　initRef")

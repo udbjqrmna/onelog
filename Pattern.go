@@ -2,8 +2,8 @@ package onelog
 
 import "unicode/utf8"
 
-//WritePattern 记录的格式
-type WritePattern interface {
+//Pattern 记录的格式
+type Pattern interface {
 	//init 初始化的动作
 	init(buffer []byte) []byte
 	//AppKey 将一个名称记录至缓存中

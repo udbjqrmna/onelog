@@ -25,7 +25,7 @@ func TestWriteFile(t *testing.T) {
 
 	//TimeFormat = ""
 
-	log.Debug().AddRuntime(&CoroutineID{}).AddConstant("a1", "b2")
+	log.Debug().AddRuntime(&CoroutineID{}).AddStatic("a1", "b2")
 
 	go log.Error().Int("INT", 10).Bool("B", true).Msg("abc1231231defg")
 	log.Panic().Int("INT", 10).Bool("B", true).Msg("abcdef23123g")
@@ -67,8 +67,8 @@ func TestMulFile(t *testing.T) {
 
 	TimeFormat = ""
 
-	log.Debug().AddRuntime(&CoroutineID{}).AddConstant("a1", "b2")
-	log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddConstant("a1", "b2")
+	log.Debug().AddRuntime(&CoroutineID{}).AddStatic("a1", "b2")
+	log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddStatic("a1", "b2")
 
 	log.Error().Int("INT", 10).Bool("B", true).Msg("abc1231231defg")
 	log.Panic().Int("INT", 10).Bool("B", true).Msg("abcdef23123g")
@@ -90,8 +90,8 @@ func TestPattern(t *testing.T) {
 
 	//TimeFormat = ""
 
-	log.Debug().AddRuntime(&CoroutineID{}).AddConstant("a1", "b2")
-	log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddConstant("a1", "b2")
+	log.Debug().AddRuntime(&CoroutineID{}).AddStatic("a1", "b2")
+	log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddStatic("a1", "b2")
 
 	log.Error().Int("INT", 10).Bool("B", true).Msg("中文")
 	log.Panic().Int("INT", 10).Bool("B", true).Msg("中文")
@@ -108,7 +108,7 @@ func TestRunningTime(t *testing.T) {
 	var log = New(&Stdout{os.Stdout}, ErrorLevel, &JsonPattern{})
 
 	//TimeFormat = ""
-	//log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddConstant("a1", "b2")
+	//log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddStatic("a1", "b2")
 
 	log.Error().Msg("中文")
 	log.Error().Msg("中文")
