@@ -43,7 +43,7 @@ hs_err_pid*.log
 .svn
 
 #Idea project file and directory
-.idea
+#.idea
 **/*.iml
 
 #gradle
