@@ -22,6 +22,18 @@
 go get -u github.com/udbjqrmna/onelog/log
 ```
 
+## 使用前：
+
+需要修改sdk,当前操作方式：
+1.在`src/runtime/proc.go`最后增加如下方法。
+
+```go
+func Goid() int64 {
+  _g_ := getg()
+  return _g_.goid
+}
+```
+
 ## 最简单的使用方式
 ```go
 import github.com/udbjqrmna/onelog/log
@@ -179,8 +191,7 @@ func main(){
 使用`AddStatic()`方法为每一个日志的日志等级进行独立的设置。每个设置将不影响其他等级的数据。
 
 #### 运行时通用项
-* `CoroutineID` 对象将获得当前执行此日志时的协程ID，可设置`onelog.CoroutineIDName`的值来改变它的项目名称。效率较低，不建议在生产环境采用此方法。
-* `CoroutineIDBySrc` 使用修改源码方式来获得当前执行此日志时的协程ID，可设置`onelog.CoroutineIDName`的值来改变它的项目名称。使用此类前需要查看说明
+* `CoroutineID` 对象将获得当前执行此日志时的协程ID，可设置`onelog.CoroutineIDName`的值来改变它的项目名称
 * `Caller` 对象获得当前调用者的文件与行数。可设置`onelog.CallerName`的值来改变它的项目名称，也可设置`CallerSkipFrameCount`的值来跳过几次函数的调用。
 * 时间的运行时通用项是日志对象构建时自动加入的。可以使用`onelog.TimeFormat`方式进行改变.如直接设置成“”将使用UNIX时间的long值。
 >设置名称的代码需要放至log日志实例或`NewLogFromConfig`方法之前进行。因此`最简单的使用方式`无法变更日志项名称

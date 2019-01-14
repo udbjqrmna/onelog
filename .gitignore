@@ -22,7 +22,7 @@
 
 
 # Mac-specific directory that no other operating system needs.
-.DS_Store
+#.DS_Store
 **/.DS_Store
 
 # JVM crash logs
