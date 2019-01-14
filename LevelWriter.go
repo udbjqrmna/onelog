@@ -31,7 +31,7 @@ func newDefaultLevelWriter(writer Writer, level Level, pattern Pattern) *Default
 	}
 
 	lw.buffer = lw.Pattern.init(lw.buffer[:0])
-	lw.AddConstant(LevelName, level.String())
+	lw.AddStatic(LevelName, level.String())
 	lw.AddRuntime(&TimeValue{})
 
 	return lw

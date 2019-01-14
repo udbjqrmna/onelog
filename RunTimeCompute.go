@@ -1,6 +1,7 @@
 package onelog
 
 import (
+	"bytes"
 	"runtime"
 	"strconv"
 	"time"
@@ -28,6 +29,30 @@ func (cid *CoroutineID) GetName() string {
 }
 
 func (cid *CoroutineID) Values() []byte {
+	b := make([]byte, 64)
+	b = b[:runtime.Stack(b, false)]
+	b = bytes.TrimPrefix(b, []byte("goroutine "))
+	b = b[:bytes.IndexByte(b, ' ')]
+
+	return b
+}
+
+//使用修改源码方式来获得当前执行此日志时的协程ID
+// 需要修改sdk,当前操作方式：
+//在`src/runtime/proc.go`最后增加如下方法。
+//
+//func Goid() int64 {
+//  _g_ := getg()
+//  return _g_.goid
+//}
+type CoroutineIDBySrc struct {
+}
+
+func (cid *CoroutineIDBySrc) GetName() string {
+	return CoroutineIDName
+}
+
+func (cid *CoroutineIDBySrc) Values() []byte {
 	result := make([]byte, 0)
 
 	result = strconv.AppendInt(result, runtime.Goid(), 10)
