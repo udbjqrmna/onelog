@@ -28,10 +28,12 @@ func (cid *CoroutineID) GetName() string {
 }
 
 func (cid *CoroutineID) Values() []byte {
-	result := make([]byte, 0)
+	b := make([]byte, 64)
+	b = b[:runtime.Stack(b, false)]
+	b = bytes.TrimPrefix(b, []byte("goroutine "))
+	b = b[:bytes.IndexByte(b, ' ')]
 
-	result = strconv.AppendInt(result, runtime.Goid(), 10)
-	return result
+	return b
 }
 
 //TimeValue 得到当前时间的值

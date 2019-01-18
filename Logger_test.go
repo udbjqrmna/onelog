@@ -1,6 +1,7 @@
 package onelog
 
 import (
+	"github.com/udbjqrmna/onelog/plugin"
 	"os"
 	"testing"
 	"time"
@@ -91,7 +92,7 @@ func TestPattern(t *testing.T) {
 	//TimeFormat = ""
 
 	log.Debug().AddRuntime(&CoroutineID{}).AddStatic("a1", "b2")
-	log.Error().AddRuntime(&CoroutineID{}).AddRuntime(&Caller{}).AddStatic("a1", "b2")
+	log.Error().AddRuntime(&plugin.CoroutineIDBySrc{}).AddRuntime(&Caller{}).AddStatic("a1", "b2")
 
 	log.Error().Int("INT", 10).Bool("B", true).Msg("中文")
 	log.Panic().Int("INT", 10).Bool("B", true).Msg("中文")
