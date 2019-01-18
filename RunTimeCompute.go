@@ -1,7 +1,6 @@
 package onelog
 
 import (
-	"bytes"
 	"runtime"
 	"strconv"
 	"time"
