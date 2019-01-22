@@ -94,6 +94,30 @@ func (l *Logger) refresh() {
 	}
 }
 
+//AddStatic 给此Logger所有日志都增加一个静态
+func (l *Logger) AddStatic(name, value string) *Logger {
+	//循环调用
+	for i := TraceLevel; i <= PanicLevel; i++ {
+		if l.lws[i] != disableLevelWriter {
+			l.lws[i] = l.lws[i].AddStatic(name, value)
+		}
+	}
+
+	return l
+}
+
+//AddRuntime 给此Logger所有日志都增加一个运行时记录
+func (l *Logger) AddRuntime(r RunTimeCompute) *Logger {
+	//循环调用
+	for i := TraceLevel; i <= PanicLevel; i++ {
+		if l.lws[i] != disableLevelWriter {
+			l.lws[i] = l.lws[i].AddRuntime(r)
+		}
+	}
+
+	return l
+}
+
 func (l *Logger) Close() {
 	l.writer.Close()
 }
