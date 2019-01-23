@@ -66,7 +66,7 @@ func (*Caller) GetName() string {
 }
 
 func (c *Caller) Values() []byte {
-	_, file, line, ok := runtime.Caller(c.CallerSkipFrameCount + 2)
+	_, file, line, ok := runtime.Caller(c.CallerSkipFrameCount + 3)
 	var buf = make([]byte, len(file)+7)
 
 	if ok {
