@@ -213,3 +213,38 @@ func SaveLogList(name string, log *Logger) {
 func GetLog(name string) *Logger {
 	return logs[name]
 }
+
+//InfoMsg 直接以Info等级进行一个日志记录
+func (l *Logger) InfoMsg(msg string) {
+	l.Info().Msg(msg)
+}
+
+//DebugMsg 直接以Debug等级进行一个日志记录
+func (l *Logger) DebugMsg(msg string) {
+	l.Debug().Msg(msg)
+}
+
+//TraceMsg 直接以Trace等级进行一个日志记录
+func (l *Logger) TraceMsg(msg string) {
+	l.Trace().Msg(msg)
+}
+
+//WarnMsg 直接以Warn等级进行一个日志记录
+func (l *Logger) WarnMsg(msg string) {
+	l.Warn().Msg(msg)
+}
+
+//ErrorMsg 直接以Error等级进行一个日志记录
+func (l *Logger) ErrorMsg(msg string) {
+	l.Error().Msg(msg)
+}
+
+//FatalMsg 直接以Fatal等级进行一个日志记录
+func (l *Logger) FatalMsg(msg string) {
+	l.Fatal().Msg(msg)
+}
+
+//PanicMsg 直接以Panic等级进行一个日志记录
+func (l *Logger) PanicMsg(msg string) {
+	l.Panic().Msg(msg)
+}
