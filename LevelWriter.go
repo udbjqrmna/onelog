@@ -1,5 +1,7 @@
 package onelog
 
+import 	"fmt"
+
 type LevelWriter interface {
 	Int(key string, value int) LevelWriter
 	Hex(key string, value int) LevelWriter
@@ -11,8 +13,11 @@ type LevelWriter interface {
 	Float64(key string, value float64) LevelWriter
 	Bool(key string, b bool) LevelWriter
 	Bytes(key string, bytes []byte) LevelWriter
-	//Msg 进行一次日志的消息写入，必须调用此方法才能正常写入日志内
+	//Msg 进行一次日志的消息写入，必须调用此方法或msgf()方法才能正常写入日志内
 	Msg(message string)
+	//Msg 进行一次日志的消息写入，参数可参考fmt.Sprintf()方法。
+	Msgf(message string, p ...interface{})
+
 	clone() LevelWriter
 	//AddRuntime 增加一个计算值，这个值在每一个日志等级独立，每一次记录日志都将重新计算并记录它
 	AddRuntime(r RunTimeCompute) LevelWriter
@@ -175,6 +180,24 @@ func (lw *DefaultLevelWriter) Msg(message string) {
 	_, _ = lw.Writer.Write(buf)
 }
 
+func (lw *DefaultLevelWriter) Msgf(message string, p ...interface{}) {
+	buf := lw.buffer
+	pattern := lw.Pattern
+
+	if lw.runtimeComputes != nil {
+		run := lw.runtimeComputes
+		for ; run != nil; run = run.next {
+			buf = pattern.addRuntimeValues(buf, run.curr)
+		}
+	}
+
+	buf = pattern.AppendKey(buf, MessageName)
+	buf = pattern.AppendString(buf, fmt.Sprintf(message, p))
+	buf = pattern.Complete(buf)
+
+	_, _ = lw.Writer.Write(buf)
+}
+
 type DisableLevelWriter struct {
 }
 
@@ -211,6 +234,9 @@ func (dlw *DisableLevelWriter) Bool(key string, b bool) LevelWriter {
 
 //Msg 什么都不干的一个东西，直接返回。
 func (dlw *DisableLevelWriter) Msg(message string) {
+}
+
+func (dlw *DisableLevelWriter) Msgf(message string, p ...interface{}) {
 }
 
 func (dlw *DisableLevelWriter) clone() LevelWriter {
