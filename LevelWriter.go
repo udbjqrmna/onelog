@@ -1,6 +1,6 @@
 package onelog
 
-import 	"fmt"
+import "fmt"
 
 type LevelWriter interface {
 	Int(key string, value int) LevelWriter
@@ -13,6 +13,7 @@ type LevelWriter interface {
 	Float64(key string, value float64) LevelWriter
 	Bool(key string, b bool) LevelWriter
 	Bytes(key string, bytes []byte) LevelWriter
+	Error(error error) LevelWriter
 	//Msg 进行一次日志的消息写入，必须调用此方法或msgf()方法才能正常写入日志内
 	Msg(message string)
 	//Msg 进行一次日志的消息写入，参数可参考fmt.Sprintf()方法。
@@ -92,6 +93,12 @@ func (lw *DefaultLevelWriter) Bytes(key string, bytes []byte) LevelWriter {
 	lw.buffer = lw.Pattern.AppendKey(lw.buffer, key)
 	lw.buffer = lw.Pattern.AppendValue(lw.buffer, bytes)
 
+	return lw
+}
+
+func (lw *DefaultLevelWriter) Error(error error) LevelWriter {
+	lw.buffer = lw.Pattern.AppendKey(lw.buffer, ErrorName)
+	lw.buffer = lw.Pattern.AppendValue(lw.buffer, []byte(error.Error()))
 	return lw
 }
 
@@ -225,6 +232,9 @@ func (dlw *DisableLevelWriter) Float32(key string, value float32) LevelWriter {
 	return dlw
 }
 func (dlw *DisableLevelWriter) Float64(key string, value float64) LevelWriter {
+	return dlw
+}
+func (dlw *DisableLevelWriter) Error(error error) LevelWriter {
 	return dlw
 }
 

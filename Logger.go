@@ -33,6 +33,7 @@ var (
 	TimeName        = "time"
 	TimeFormat      = time.RFC3339
 	CallerName      = "caller"
+	ErrorName       = "err"
 )
 
 func (l Level) String() string {
