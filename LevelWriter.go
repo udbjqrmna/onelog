@@ -91,7 +91,7 @@ func (lw *DefaultLevelWriter) Hex(key string, value int) LevelWriter {
 
 func (lw *DefaultLevelWriter) Bytes(key string, bytes []byte) LevelWriter {
 	lw.buffer = lw.Pattern.AppendKey(lw.buffer, key)
-	lw.buffer = lw.Pattern.AppendValue(lw.buffer, bytes)
+	lw.buffer = lw.Pattern.AppendString(lw.buffer, fmt.Sprintf("% X",bytes))
 
 	return lw
 }
