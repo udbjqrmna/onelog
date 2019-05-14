@@ -21,18 +21,6 @@
 go get -u github.com/udbjqrmna/onelog/log
 ```
 
-## 使用前：
-
-需要修改sdk,当前操作方式：
-1.在`src/runtime/proc.go`最后增加如下方法。
-
-```go
-func Goid() int64 {
-  _g_ := getg()
-  return _g_.goid
-}
-```
-
 ## 最简单的使用方式
 ```go
 import github.com/udbjqrmna/onelog/log
